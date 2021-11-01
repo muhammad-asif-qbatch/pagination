@@ -11,6 +11,7 @@ const createProduct = async (req, res) => {
     }
 }
 const getProduct = async (req, res) => {
+    // This code is trying to lookfor objects if conditoned otherwise list down the products
     try {
         console.log('Getproduct ', req.query );
         const { page, rowsPerPage } = JSON.parse(req.query.pagination);
