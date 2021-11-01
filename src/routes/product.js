@@ -21,7 +21,7 @@ productRouter.get("/", hello);
 // });
 productRouter.post("/products", createProduct);
 productRouter.get("/products", getProduct);
-productRouter.get("/products/:id", getProductOnSearch);
+productRouter.get("/products/v1:id", getProductOnSearch);
 // productRouter.get("/products", async (req, res) => {
 //     try {
 //         const productsData = await Product.find();

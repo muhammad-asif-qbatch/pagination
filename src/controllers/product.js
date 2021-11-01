@@ -12,15 +12,42 @@ const createProduct = async (req, res) => {
 }
 const getProduct = async (req, res) => {
     try {
-        const limit = req.query.body;
-        const Limit = parseInt(limit, 10);
-        console.log("Limit", typeof(Limit));
-        const productsData = await Product.find({}).limit(Limit);
+        console.log('Getproduct ', req.query );
+        const { page, rowsPerPage } = JSON.parse(req.query.pagination);
+        const {field, value} = JSON.parse(req.query.filter);
+        if(value){
+            const productsData = await Product.find({
+                $or: [
+                    { name: { $regex: `.*${value}.*`, $options: 'i' } },
+                    { asin: { $regex: `.*${value}.*`, $options: 'i' } },
+                  ]
+            }).skip(page*rowsPerPage).limit(rowsPerPage);
+            const productsCount = await Product.count({});
+            res.status(200).json({
+                productsData,
+                productsCount,
+                success: true
+            });
+        }else{
+            const productsData = await Product.find({}).skip(page*rowsPerPage).limit(rowsPerPage);
+            const productsCount = await Product.count({});
+            res.status(200).json({
+                productsData,
+                productsCount,
+                success: true
+            });
+        }
+        
         //console.log(productsData);
-        res.send(productsData);
+        // res.status(200).json({
+        //     productsData,
+        //     productsCount,
+        //     success: true
+        // });
     }
     catch (e) {
-        res.send(e);
+        console.log("e", e)
+        res.status(500).json(e);
     }
 }
 const getSingleProduct = async (req, res) => {
@@ -51,11 +78,15 @@ const deleteTheProduct = async (req, res) => {
 }
 const updateTheProduct = async (req, res) => {
     try {
-        const asin = req.params.id;
-        const updatedProduct = await Product.findOneAndUpdate({ asin }, req.body,
-            { new: true });
-        res.send(updatedProduct);
+        const {id} = req.params;
+        const {asin} = req.body;
+        console.log('Req body: ', req.body);
+        console.log('id', id);
+        const updatedProduct = await Product.findOneAndUpdate({ _id:id }, {asin},{ returnOriginal: false });
+        console.log('Updated or not ! ', updatedProduct);
+        res.send(updatedProduct)
     } catch (error) {
+        console.log('Update failed!')
         res.status(400).send(error)
     }
 }
