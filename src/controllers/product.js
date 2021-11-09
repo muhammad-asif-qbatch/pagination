@@ -11,10 +11,27 @@ const createProduct = async (req, res) => {
     }
 }
 const getProduct = async (req, res) => {
+    // This code is trying to lookfor objects if conditoned otherwise list down the products
+    //Hello
     try {
         console.log('Getproduct ', req.query );
         const { page, rowsPerPage } = JSON.parse(req.query.pagination);
         const {field, value} = JSON.parse(req.query.filter);
+
+    //    switch (field) {
+    //        case 'keyword':
+    //            // MongoDB query
+    //            break;
+    //        case 'status':
+    //            // MongoDB query
+    //            break;
+    //        case '':
+    //            // MongoDB query
+    //            break;
+    //        default:
+    //            // Fetch all the data
+    //            break;
+    //    }
         if(value){
             const productsData = await Product.find({
                 $or: [
